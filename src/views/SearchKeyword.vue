@@ -12,7 +12,7 @@
       search
     </button> -->
 
-    <h1 class="text-2xl py-2">SearchKeyword</h1>
+    <h1 class="text-2xl py-2">SearchKeywordMusic</h1>
     <input
         placeholder="enter track name"
         v-model="search_keyword"
