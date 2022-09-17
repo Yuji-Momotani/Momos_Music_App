@@ -1,6 +1,6 @@
 <template>
   <div class="nowplaying">
-    <h1 class="text-2xl py-2">SearchPlaying</h1>
+    <h1 class="text-2xl py-2">SearchPlayingMusic</h1>
     <!-- <button @click="spotifyLogin">認証</button> -->
     <br>
     <button 
