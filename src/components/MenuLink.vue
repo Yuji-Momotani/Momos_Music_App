@@ -86,8 +86,8 @@ export default {
   data() {
     return {
       menuShow: false,
-      linksName:['Home','このアプリについて','楽曲情報検索アプリ'],
-      linksPath:['/','/about','/MusicSearch'],
+      linksName:['Home','このアプリについて','楽曲情報検索アプリ','Piano App'],
+      linksPath:['/','/about','/MusicSearch','/Piano'],
       subTitle:'Top'
     }
   },

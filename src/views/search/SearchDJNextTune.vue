@@ -1,29 +1,36 @@
 <template>
   <div class="search">
     <h1 class="text-2xl py-2">SearchDJNextTune</h1>
-    
-    <!-- エラー情報 -->
-    <div class="py-1.5 text-red-600">
-      {{err_message}}
-    </div>
 
     <!-- 選曲リスト -->
     <div v-if="!err_message && array_music_select_data.length != 0" v-cloak class="mt-8">
-      <div v-for="(item,n) in array_music_select_data" v-bind:key="n">
-        <div v-if="n>0">
-          <!-- 1件目以降は矢印をつける -->
-          ↓<br />
+      <div v-if="isDispSelectList">
+        <div v-for="(item,n) in array_music_select_data" v-bind:key="n">
+          <div v-if="n>0">
+            ↓<br />
+          </div>
+          {{n+1}}：{{item.name}}&emsp;{{item.artists[0].name}}
         </div>
-        {{n+1}}：{{item.name}}&emsp;{{item.artists[0].name}}
+        <div v-if="!this.isKeyword_Select" class="mt-4"><!-- キーワード検索の場合はリストの表示、非表示は切り替えれないこと -->
+          <button class="py-1.5 px-4 transition-colors bg-green-300 border active:bg-green-600 font-medium border-green-600 text-white rounded-lg hover:bg-green-600 disabled:opacity-50"
+            @click="DipsList">リスト非表示
+          </button>
+        </div>
       </div>
-      <div class="mt-4">
-        <button class="py-1.5 px-4 transition-colors bg-green-300 border active:bg-green-600 font-medium border-green-600 text-white rounded-lg hover:bg-green-600 disabled:opacity-50"
-          @click="CreateList">リストを作成
+      <div v-else>
+        <p class="font-bold text-lg mb-2">類似検索の対象曲</p>
+        {{array_music_select_data.length}}：
+        {{array_music_select_data[array_music_select_data.length-1].name}}&emsp;
+        {{array_music_select_data[array_music_select_data.length-1].artists[0].name}}<br/>
+        <button class="py-1.5 px-4 transition-colors bg-green-300 border active:bg-green-600 font-medium border-green-600 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 mt-4"
+            @click="DipsList">リスト表示
         </button>
       </div>
     </div>
 
-    <div v-if="isKeyword_Select" class="mt-8">
+    
+    <!-- キーワード検索の場合 -->
+    <div v-if="isKeyword_Select && !err_message" class="mt-8">
       <input
           placeholder="enter track name"
           v-model="search_keyword"
@@ -34,12 +41,33 @@
         検索
       </button>
     </div>
+    <!-- 条件追加チェックボックス -->
+    <div v-else>
+      <div class="mt-12 order-dashed border-gray-600 border-4">
+        <input type="checkbox" id="bpm_match" v-model="isBpmMatchCheck">
+        <label for="bpm_match">BPMが近い</label>
+        <input type="checkbox" id="key_match" v-model="isKeyMatchCheck" class="ml-8">
+        <label for="key_match">キーが一致</label>
+        <br />
+        <input type="checkbox" id="energy_up" v-model="isEnergyUpCheck">
+        <label for="energy_up">テンションアップ</label>
+        <input type="checkbox" id="energy_down" v-model="isEnergyDownCheck" class="ml-8">
+        <label for="energy_down">テンションダウン</label>
+        <button class="py-1.5 px-4 transition-colors bg-green-300 border active:bg-green-600 font-medium border-green-600 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 ml-4"
+        @click="seachTrackRecommend">
+        再検索
+      </button>
+      </div>
+    </div>
     <!-- 一般情報 -->
     <div class="py-1.5 mt-4">
           {{type_wait_message}}
     </div>
+    
 
     <div v-if="!err_message && array_response_data.length > 0" v-cloak>
+
+      <!-- メイン：推奨楽曲の表示 -->
       <div v-for="(item,n) in array_response_data" v-bind:key="n" class="mt-12 order-dashed border-gray-600 border-4">
         <div class="container mx-auto">
           <div class="grid grid-cols-7">
@@ -59,9 +87,11 @@
             <div class="col-span-5 mt-4">
               <!-- 画像 -->
               <div class="m-auto w-60 h-60 rounded-full ring-4 ring-indigo-600 py-2 bg-white">
-                <a href="#" @click="openSpotify(item.external_urls.spotify)" class="cursor-pointer">
+                <!-- 以下のリンクでスポティファイに遷移した場合、戻ってきて再度通信するとなぜかエラーになる。よって画像のみとする -->
+                <!-- <a href="#" @click="openSpotify(item.external_urls.spotify)" class="cursor-pointer">
                   <img :src="item.album.images[1].url" class="rounded-full m-auto w-56 h-56"/>
-                </a>
+                </a> -->
+                <img :src="item.album.images[1].url" class="rounded-full m-auto w-56 h-56"/>
               </div>
             </div>
             <div class="col-span-1"></div>
@@ -115,18 +145,19 @@
           </div>
         </div>
       </div>
+      
+      <!-- 検索方法切り替え -->
+      <div v-if="!isKeyword_Select" class="mt-4">
+        <p>推奨された曲に気に入ったものがありませんか？</p><br/>
+        <button @click="ChangeSearchKeyword" class="py-1.5 px-4 transition-colors bg-transparent active:bg-gray-200 font-medium text-blue-600 rounded-lg hover:bg-gray-100 disabled:opacity-50">
+          キーワード検索にする</button>
+      </div>
     </div>
     <div v-else-if="!err_message && search_action_flg && array_response_data.length === 0">
       <!-- 検索はかけたが、結果がなかった場合 -->
       <p class="py-1.5">
         データが見つかりませんでした。
       </p>
-    </div>
-
-    <div v-if="!isKeyword_Select" class="mt-4">
-      <p>推奨された曲に気に入ったものがありませんか？</p><br/>
-      <button @click="ChangeSearchKeyword" class="py-1.5 px-4 transition-colors bg-transparent active:bg-gray-200 font-medium text-blue-600 rounded-lg hover:bg-gray-100 disabled:opacity-50">
-        キーワード検索にする</button>
     </div>
   </div>
 </template>
@@ -159,6 +190,13 @@
         array_music_select_data:[], //選曲された曲の一般情報
         array_music_select_audio_features_data:[], //選曲された曲の詳細情報
         isKeyword_Select:true,
+        isDispSelectList:false,
+
+        // 検索条件のチェックボックス
+        isBpmMatchCheck:false,
+        isKeyMatchCheck:false,
+        isEnergyUpCheck:false,
+        isEnergyDownCheck:false,
 
         // 詳細データ(詳細情報の個別配列を用意するのは、それぞれデータを変換しないといけないから
         // v-forの中でやるには少々面倒なため、変換後のデータが格納される。)
@@ -182,15 +220,19 @@
       }
     },
     watch:{
-      // search_keyword:function(){
-      //   this.type_wait_message = '入力中...'
-      //   this.debouncedSeachTrack()
-      // },
       array_response_data: function(newData){
-        // console.log(newData.tracks.items[0].id)
-        // this.seachTrackAudioFeature(newData.tracks.items[0].album.id)
         if(newData != null){
           this.seachTrackAudioFeature(newData)
+        }
+      },
+      isEnergyUpCheck(newCheck){
+        if(newCheck){
+          this.isEnergyDownCheck = false
+        }
+      },
+      isEnergyDownCheck(newCheck){
+        if(newCheck){
+          this.isEnergyUpCheck = false
         }
       }
     },
@@ -198,9 +240,6 @@
       this.err_message = ''
     },
     mounted:function(){
-      // lodashの使用(最後の入力から3000msec待って、getAnswerを走らせる)
-      //this.debouncedSeachTrack = _.debounce(this.seachTrack,3000)
-
       if(!this.AuthorizationParam){
         //認証情報が渡ってきていなかった場合、ログイン画面に戻す。
         this.$router.push('/MusicSearch')
@@ -318,45 +357,71 @@
         this.array_music_select_data.push(this.array_response_data[index])
         this.array_music_select_audio_features_data.push(this.array_response_audio_features_data[index])
 
-        // 追加された音楽の情報を元に次の曲を検索
+        this.seachTrackRecommend()
+      },
+      seachTrackRecommend(){
+        // リストの末尾の音楽情報を元に次の曲を検索
         const arrLen = this.array_music_select_audio_features_data.length // 何件リストに入っているか
+        //paramsの定義
+        let params = {
+          "seed_tracks": this.array_music_select_audio_features_data[arrLen-1].id
+          ,"seed_artists": this.array_music_select_data[arrLen-1].artists[0].id
+          // , "min_danceability": (this.array_music_select_audio_features_data[arrLen-1].danceability * 0.8).toString()
+          // , "max_danceability": (this.array_music_select_audio_features_data[arrLen-1].danceability * 1.2).toString()
+          , "limit": "7"
+          , "market": "JP"
+        }
+        if(this.isBpmMatchCheck){
+          //BPMが近いにチェックがあった場合
+          params["target_tempo"] = (this.array_music_select_audio_features_data[arrLen-1].tempo).toString()
+          params["min_tempo"] = (this.array_music_select_audio_features_data[arrLen-1].tempo * 0.8).toString()
+          params["max_tempo"] = (this.array_music_select_audio_features_data[arrLen-1].tempo * 1.2).toString()
+        }
+        if(this.isKeyMatchCheck){
+          //キー完全一致にチェックがあった場合
+          params["target_key"] = this.array_music_select_audio_features_data[arrLen-1].key
+          params["target_mode"] = this.array_music_select_audio_features_data[arrLen-1].mode
+        }
+        if(this.isEnergyDownCheck){
+          //テンションダウンにチェックがあった場合
+          params["min_energy"] = (this.array_music_select_audio_features_data[arrLen-1].energy * 0.8).toString()
+          params["max_energy"] = (this.array_music_select_audio_features_data[arrLen-1].energy * 1.0).toString()
+        }
+        if(this.isEnergyUpCheck){
+          //テンションアップにチェックがあった場合
+          params["min_energy"] = (this.array_music_select_audio_features_data[arrLen-1].energy * 1.0).toString()
+          params["max_energy"] = (this.array_music_select_audio_features_data[arrLen-1].energy * 1.2).toString()
+        }
+
         axios.get("https://api.spotify.com/v1/recommendations",{
           headers:{
             // "Authorization": this.$route.query.token_type + ' ' + this.$route.query.access_token
             "Authorization": this.AuthorizationParam
           },
-          params:{
-            "seed_tracks": this.array_music_select_audio_features_data[arrLen-1].id
-            ,"seed_artists": this.array_music_select_data[arrLen-1].artists[0].id
-            , "min_tempo": (this.array_music_select_audio_features_data[arrLen-1].tempo * 0.9).toString()
-            , "max_tempo": (this.array_music_select_audio_features_data[arrLen-1].tempo * 1.1).toString()
-            , "min_danceability": (this.array_music_select_audio_features_data[arrLen-1].danceability * 0.9).toString()
-            , "max_danceability": (this.array_music_select_audio_features_data[arrLen-1].danceability * 1.1).toString()
-            , "min_energy": (this.array_music_select_audio_features_data[arrLen-1].energy * 0.9).toString()
-            , "max_energy": (this.array_music_select_audio_features_data[arrLen-1].energy * 1.1).toString()
-            , "limit": "7"
-            , "market": "JP"
-          }
+          params
         }).then(response=>{
           this.array_response_data = response.data.tracks
           this.isKeyword_Select = false
+          this.isDispSelectList = false
           //デバッグ
           // console.log('テストNext');
           // console.log(this.array_music_select_data);
-          
           this.type_wait_message = ''
         }).catch(error =>{
           this.type_wait_message = ''
           this.err_message = 'API通信中にエラーが発生しました。¥nうまく動作しない場合は再度認証してください。'
           console.log(error)
+        }).finally(()=>{
+          scroll(0,0)
         })
       },
-      CreateList(){
-        alert('現在開発中です。Version1.2以降で追加予定です。')
+      DipsList(){
+        this.isDispSelectList = !this.isDispSelectList
       },
       ChangeSearchKeyword(){
         this.isKeyword_Select = true
         this.search_action_flg = false
+        this.isDispSelectList = true
         this.search_keyword = ""
         this.type_wait_message = "検索してください。"
 
