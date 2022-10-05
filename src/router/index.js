@@ -2,10 +2,11 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Certification from '@/views/Certification.vue'
 import Login from '@/views/Login.vue'
-import MusicSearch from '@/views/MusicSearch.vue'
-import SearchNowPlaying from '../views/SearchNowPlaying.vue'
-import SearchKeyword from '@/views/SearchKeyword.vue'
-import SearchDJNextTune from '@/views/SearchDJNextTune.vue'
+import MusicSearch from '@/views/search/MusicSearch.vue'
+import SearchNowPlaying from '@/views/search/SearchNowPlaying.vue'
+import SearchKeyword from '@/views/search/SearchKeyword.vue'
+import SearchDJNextTune from '@/views/search/SearchDJNextTune.vue'
+import Piano from '../views/piano/Piano.vue'
 
 const routes = [
   {
@@ -59,6 +60,11 @@ const routes = [
     name: 'SearchDJNextTune',
     component: SearchDJNextTune,
     props: true
+  },
+  {
+    path: '/Piano',
+    name: 'Piano',
+    component: Piano
   },
 ]
 
