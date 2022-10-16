@@ -16,9 +16,21 @@
       </div>
     </div>
     <div v-else class="mt-16">
-      <router-link to="/Certification">
-        <p class="bg-green-500 hover:bg-green-400 text-white rounded py-1.5 px-2 w-32 m-auto">ログイン</p>
-      </router-link>
+      <div>
+        <router-link to="/Certification">
+          <p class="bg-green-500 hover:bg-green-400 text-white rounded py-1.5 px-2 w-32 m-auto">ログイン</p>
+        </router-link>
+      </div>
+      <div class="mt-8">
+        <router-link to="/CertificationRecruiter" class="m mt-8">
+          <p class="text-blue-300 underline hover:text-white inline-flex items-center m-auto">
+            人事採用の方はこちらへ
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+            </svg>
+          </p>
+        </router-link>
+      </div>
     </div>
   </div>
 </template>

@@ -1,7 +1,6 @@
 <template>
   <div class="search">
     <h1 class="text-2xl py-2">SearchDJNextTune</h1>
-
     <!-- 選曲リスト -->
     <div v-if="!err_message && array_music_select_data.length != 0" v-cloak class="mt-8">
       <div v-if="isDispSelectList">
@@ -68,84 +67,59 @@
     <div v-if="!err_message && array_response_data.length > 0" v-cloak>
 
       <!-- メイン：推奨楽曲の表示 -->
-      <div v-for="(item,n) in array_response_data" v-bind:key="n" class="mt-12 order-dashed border-gray-600 border-4">
-        <div class="container mx-auto">
-          <div class="grid grid-cols-7">
-            <div class="col-span-1"></div>
-            <!-- アーティスト名 -->
-            <p class="col-span-5 text-center">アーティスト : {{ item.artists[0].name }}</p>
-            <div class="col-span-1"></div>
-          </div>
-          <div class="grid grid-cols-7">
-            <div class="col-span-1"></div>
-            <!-- 曲名 -->
-            <p class="col-span-5 text-center">曲名 : {{ item.name }}</p>
-            <div class="col-span-1"></div>
-          </div>
-          <div class="grid grid-cols-7">
-            <div class="col-span-1"></div>
-            <div class="col-span-5 mt-4">
-              <!-- 画像 -->
-              <div class="m-auto w-60 h-60 rounded-full ring-4 ring-indigo-600 py-2 bg-white">
-                <!-- 以下のリンクでスポティファイに遷移した場合、戻ってきて再度通信するとなぜかエラーになる。よって画像のみとする -->
-                <!-- <a href="#" @click="openSpotify(item.external_urls.spotify)" class="cursor-pointer">
-                  <img :src="item.album.images[1].url" class="rounded-full m-auto w-56 h-56"/>
-                </a> -->
-                <img :src="item.album.images[1].url" class="rounded-full m-auto w-56 h-56"/>
+      <section class="body-font">
+        <div class="container px-5 py-8 mx-auto">
+          <div class="flex flex-wrap -m-4">
+            <div v-for="(item,n) in array_response_data" v-bind:key="n" class="mt-12 p-4 w-full md:w-1/2 max-w-sm mx-auto lg:w-1/3">
+              <div class="h-full py-4 border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
+                <!-- アーティスト名 -->
+                <p class="text-center">アーティスト : {{ item.artists[0].name }}</p>
+                <!-- 曲名 -->
+                <p class="text-center">曲名 : {{ item.name }}</p>
+                <div class="mt-4">
+                  <!-- 画像 -->
+                  <div class="m-auto w-60 h-60 rounded-full ring-4 ring-indigo-600 py-2 bg-white">
+                    <!-- 以下のリンクでスポティファイに遷移した場合、戻ってきて再度通信するとなぜかエラーになる。よって画像のみとする -->
+                    <!-- <a href="#" @click="openSpotify(item.external_urls.spotify)" class="cursor-pointer">
+                      <img :src="item.album.images[1].url" class="rounded-full m-auto w-56 h-56"/>
+                    </a> -->
+                    <img :src="item.album.images[1].url" class="rounded-full m-auto w-56 h-56"/>
+                  </div>
+                </div>
+                <div v-if="array_response_audio_features_data.length != 0">
+                  <!-- 曲の詳細情報 --> 
+                  <!-- key -->
+                  <p class="text-center">Key : 
+                    <span v-if="array_scale[n]">
+                      {{ array_scale[n] }}
+                    </span>
+                    <span v-else>不明</span>
+                  </p>
+                  <!-- BPM -->
+                  <p class="text-center">BPM : 
+                    <span v-if="array_tempo[n]">
+                      {{ array_tempo[n] }}
+                    </span>
+                    <span v-else>不明</span>
+                  </p>
+                  <!-- 曲の長さ -->
+                  <p class="text-center">時間 : 
+                    <span v-if="array_duration_m[n] && array_duration_s[n]">
+                      {{ array_duration_m[n] }}分{{array_duration_s[n]}}秒
+                    </span>
+                    <!-- <span v-if="true">テストテスト</span> -->
+                    <span v-else>不明</span>
+                  </p>
+                  <div class="text-center">
+                    <button @click="AddMusic(n)" class="py-1 px-8 transition-colors bg-green-300 border active:bg-green-600 font-medium border-white text-white rounded-lg hover:bg-green-600 disabled:opacity-50">
+                      リストに追加</button>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="col-span-1"></div>
-          </div>
-          <div v-if="array_response_audio_features_data.length != 0">
-            <!-- 曲の詳細情報 -->
-            <div class="grid grid-cols-7 mt-4">
-              <div class="col-span-1"></div>
-              <!-- key -->
-              <p class="col-span-5 text-center">Key : 
-                <span v-if="array_scale[n]">
-                  {{ array_scale[n] }}
-                </span>
-                <span v-else>不明</span>
-              </p>
-              <div class="col-span-1"></div>
-            </div>
-            <div class="grid grid-cols-7">
-              <div class="col-span-1"></div>
-              <!-- BPM -->
-              <p class="col-span-5 text-center">BPM : 
-                <span v-if="array_tempo[n]">
-                  {{ array_tempo[n] }}
-                </span>
-                <span v-else>不明</span>
-              </p>
-              <div class="col-span-1"></div>
-            </div>
-            <div class="grid grid-cols-7">
-              <div class="col-span-1"></div>
-              <!-- 曲の長さ -->
-              <p class="col-span-5 text-center">時間 : 
-                <span v-if="array_duration_m[n] && array_duration_s[n]">
-                  {{ array_duration_m[n] }}分{{array_duration_s[n]}}秒
-                </span>
-                <!-- <span v-if="true">テストテスト</span> -->
-                <span v-else>不明</span>
-              </p>
-              <div class="col-span-1"></div>
-            </div>
-
-            <div class="grid grid-cols-7 my-4">
-              <div class="col-span-2"></div>
-              <div class="col-span-3 text-center">
-                <button @click="AddMusic(n)" class="py-1 px-8 transition-colors bg-green-300 border active:bg-green-600 font-medium border-white text-white rounded-lg hover:bg-green-600 disabled:opacity-50">
-                  リストに追加</button>
-              </div>
-              <div class="col-span-2"></div>
-            </div>
-
           </div>
         </div>
-      </div>
-      
+      </section>  
       <!-- 検索方法切り替え -->
       <div v-if="!isKeyword_Select" class="mt-4">
         <p>推奨された曲に気に入ったものがありませんか？</p><br/>
@@ -247,7 +221,6 @@
     },
     methods:{
       seachTrack: function(){
-        // console.log(this.$route.query.token_type + ' ' + this.$route.query.access_token)
         if(!this.search_keyword){
           // 検索文字が空文字だったら処理中断
           this.type_wait_message = '検索してください。'
@@ -258,10 +231,9 @@
 
         axios.get("https://api.spotify.com/v1/search",{
           headers:{
-            // "Authorization": this.$route.query.token_type + ' ' + this.$route.query.access_token
             "Authorization": this.AuthorizationParam
           },
-          params:{"q": this.search_keyword , "limit": "5", "offset": "0", "type": "track", "market": "JP"}
+          params:{"q": this.search_keyword , "limit": "6", "offset": "0", "type": "track", "market": "JP"}
         }).then(response=>{
           this.array_response_data = response.data.tracks.items
           //デバッグ
@@ -278,10 +250,8 @@
       openSpotify: function(url){
         window.open(url,'spotifyNowPlaying')
       },
-      seachTrackAudioFeature: function(items){
-        // console.log(this.$route.query.token_type + ' ' + this.$route.query.access_token)
+      seachTrackAudioFeature: function(items){        
         if(this.array_response_data.length === 0){
-          // console.log('seachTrackAudioFeature:空文字')
           this.array_response_audio_features_data = []
           this.array_tempo = []
           this.array_duration_m = []
@@ -298,25 +268,18 @@
         }
         let id = ''
         items.forEach((item,n) =>{
-        // for((item,n) in items){
           id = item.id
           axios.get("https://api.spotify.com/v1/audio-features/"+id ,{
             headers:{
               "Accept": "application/json",
               "Content-Type": "application/json",
-              // "Authorization": this.$route.query.token_type + ' ' + this.$route.query.access_token,
               "Authorization": this.AuthorizationParam
             },
-            // params:{"id": "37rDp8YkDeGVLqRS8INRiY"}
           }).then(response=>{
             // ******************
             //各詳細データのセット
             // ******************
             this.array_response_audio_features_data[n] = response.data
-            //デバッグ
-            // console.log('audio_featureテスト')
-            // console.log(response.data)
-
             // key
             if(this.array_response_audio_features_data[n].key >= 0 && this.array_response_audio_features_data[n].mode >= 0){
               this.array_scale[n] = this.array_US_musical_scale[this.array_response_audio_features_data[n].key]+''+ this.array_musical_scale_type[this.array_response_audio_features_data[n].mode]
@@ -362,13 +325,10 @@
       seachTrackRecommend(){
         // リストの末尾の音楽情報を元に次の曲を検索
         const arrLen = this.array_music_select_audio_features_data.length // 何件リストに入っているか
-        //paramsの定義
         let params = {
           "seed_tracks": this.array_music_select_audio_features_data[arrLen-1].id
           ,"seed_artists": this.array_music_select_data[arrLen-1].artists[0].id
-          // , "min_danceability": (this.array_music_select_audio_features_data[arrLen-1].danceability * 0.8).toString()
-          // , "max_danceability": (this.array_music_select_audio_features_data[arrLen-1].danceability * 1.2).toString()
-          , "limit": "7"
+          , "limit": "6"
           , "market": "JP"
         }
         if(this.isBpmMatchCheck){
@@ -395,7 +355,6 @@
 
         axios.get("https://api.spotify.com/v1/recommendations",{
           headers:{
-            // "Authorization": this.$route.query.token_type + ' ' + this.$route.query.access_token
             "Authorization": this.AuthorizationParam
           },
           params
@@ -403,9 +362,6 @@
           this.array_response_data = response.data.tracks
           this.isKeyword_Select = false
           this.isDispSelectList = false
-          //デバッグ
-          // console.log('テストNext');
-          // console.log(this.array_music_select_data);
           this.type_wait_message = ''
         }).catch(error =>{
           this.type_wait_message = ''
@@ -424,7 +380,6 @@
         this.isDispSelectList = true
         this.search_keyword = ""
         this.type_wait_message = "検索してください。"
-
         this.array_response_data = []
         this.array_response_audio_features_data = []
         scrollTo(0,0)

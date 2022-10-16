@@ -1,7 +1,6 @@
 <template>
   <div class="nowplaying">
     <h1 class="text-2xl py-2">SearchPlayingMusic</h1>
-    <!-- <button @click="spotifyLogin">認証</button> -->
     <br>
     <button 
       class="py-1.5 px-4 mb-8 transition-colors bg-green-300 border active:bg-green-600 font-medium border-green-600 text-white rounded-lg hover:bg-green-600 disabled:opacity-50"
@@ -38,12 +37,6 @@
           <div class="col-span-1"></div>
         </div>
       </div>
-      <!-- <div class="mx-auto mt-8">
-        <ul class="">
-          <li>・アルバムリリース日 : {{ response_data.item.album.release_date }}年</li>
-          <li>・曲の長さ : {{ response_data.item.duration_ms/1000 }}秒</li>
-        </ul> 
-      </div> -->
 
       <div v-if="response_audio_features_data">
         <!-- 曲の詳細情報 -->
@@ -76,7 +69,6 @@
             <span v-if="res_duration_m && res_duration_s">
               {{ res_duration_m }}分{{res_duration_s}}秒
             </span>
-            <!-- <span v-if="true">テストテスト</span> -->
             <span v-else>不明</span>
           </p>
           <div class="col-span-1"></div>
@@ -188,7 +180,6 @@ export default {
     }
   },
   props: {
-    // routeParams: Object
     AuthorizationParam:String
   },
   mounted: function() {
@@ -199,8 +190,6 @@ export default {
   },
   watch:{
     response_data: function(newData){
-      // console.log('newData.item.id')
-      // console.log(newData.item.id)
       if(newData != ''){
         console.log('↓↓newData↓↓')
         console.log(newData)
@@ -209,29 +198,15 @@ export default {
         console.log('No Playing')
         this.err_message = `再生中の曲がありません。 
                             Spotifyで曲が再生されているか確認してください。`
-        // this.response_data = null
       }
     }
   },
   methods: {
-    // spotifyLogin: function() {
-    //   let endpoint = 'https://accounts.spotify.com/authorize'
-    //   let response_type = 'token'
-    //   let client_id = '6ecca994fa22486b808b122712ce91be'
-    //   let redirect_uri = 'http://localhost:8080/NowPlaying'
-    //   let scope = 'user-read-currently-playing'
-    //   location.href = endpoint + 
-    //     '?response_type=' + response_type +
-    //     '&client_id=' + client_id +
-    //     '&redirect_uri=' + redirect_uri +
-    //     '&scope=' + scope
-    // },
     getNowPlaying: function() {
       this.message = ''
       let endpoint = 'https://api.spotify.com/v1/me/player/currently-playing?market=JP'
       let data = {
         headers: {
-          // 'Authorization': this.routeParams.token_type + ' ' + this.routeParams.access_token
           'Authorization': this.AuthorizationParam
         },
         data: {}
@@ -240,8 +215,6 @@ export default {
       .get(endpoint, data)
       .then(res => {
         this.response_data = res.data
-        // console.log('↓↓res↓↓')
-        // console.log(res)
       })
       .catch(err => {
         console.error(err)
@@ -250,7 +223,6 @@ export default {
       })
     },
     seachTrackAudioFeature: function(id){
-      // console.log(this.$route.query.token_type + ' ' + this.$route.query.access_token)
       if(this.response_data === null){
         console.log('seachTrackAudioFeature:空文字')
         this.response_audio_features_data = null
@@ -264,7 +236,6 @@ export default {
         this.res_energy = ''
         this.res_liveness = ''
         this.res_valence = ''
-
         this.err_message = ''
         return
       }
@@ -273,10 +244,8 @@ export default {
         headers:{
           "Accept": "application/json",
           "Content-Type": "application/json",
-          // "Authorization": this.$route.query.token_type + ' ' + this.$route.query.access_token,
           "Authorization": this.AuthorizationParam
         },
-        // params:{"id": "37rDp8YkDeGVLqRS8INRiY"}
       }).then(response=>{
         // // ******************
         // //各詳細データのセット
