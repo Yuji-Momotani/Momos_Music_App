@@ -4,76 +4,72 @@
       {{message}}
     </div> 
     <div id="keyboard" v-if="!isDispWidthErr" class="w-full">
-      <!-- <div v-for="(item,n) in arrayKeyboardAllMusicalScale" v-bind:key="n" class="">
-        <button v-bind:class="{blackkey:item.isSharp,whitekey:!item.isSharp}" @click="playSound(item.sound)">
+      <!-- 鍵盤 -->
+      <div class="m-auto px-0">
+        <button v-for="(item,n) in arrayKeyboardAllMusicalScale" v-bind:key="n" 
+            v-bind:class="{blackkey:item.isSharp,whitekey:!item.isSharp}" @click="playSound(item.sound,0.7,'8n')">
           <div class="flex items-end h-full w-full">
             <span class="mx-auto">{{item.sound}}</span>
           </div>
         </button>
-      </div> -->
-      <button v-for="(item,n) in arrayKeyboardAllMusicalScale" v-bind:key="n" 
-          v-bind:class="{blackkey:item.isSharp,whitekey:!item.isSharp}" @click="playSound(item.sound,0.7,'8n')">
-        <div class="flex items-end h-full w-full">
-          <span class="mx-auto">{{item.sound}}</span>
-        </div>
-      </button>
-    </div>
-    <div class="mt-8">
-      <p>コードチェック</p>
-      <div class="mt-4 mx-auto flex justify-around w-3/4">
-        <div>
-          <!-- ルート音 -->
-          <span>ルート音：</span>
-          <select v-model="selectRootSound" name="" id="" class="text-black h-8">
-            <option value=""></option>
-            <option v-for="(item,n) in arrayMusicalScale" v-bind:key="n" v-bind:value="item">{{item}}</option>
-          </select>
-        </div>
-        
-        <div>
-          <!-- メジャー・マイナー -->
-          <span>ムード：</span>
-          <select v-model="selectMood" name="" id="" class="text-black h-8">
-            <option value=""></option>
-            <option value="ma">major</option>
-            <option value="mi">minor</option>
-            <option value="di">dim</option>
-          </select>
-        </div>
-        
-        <div>
-          <!-- テンション -->
-          <span>テンション：</span>
-          <select v-model="selectTension" name="" id="sel_Tension" class="text-black h-8">
-            <option value=""></option>
-            <option value="7">7th</option>
-            <option value="M7">M7th</option>
-            <option value="9">9th</option>
-            <option value="11">11th</option>
-            <option value="13">13th</option>
-          </select>
-        </div>
-        
-        <div>
-          <button class="px-4 h-8 transition-colors bg-green-300 border active:bg-green-600 font-medium border-green-600 text-white rounded-lg hover:bg-green-600 disabled:opacity-50"
-              @click="chordSearch">検索実行
-          </button>
-        </div>
       </div>
-
-      <div class="mt-4">
-        <!-- 検索結果表示エリア -->
-        <div v-if="dispChord">
-          <!-- コードの構成音表示 -->
-          <p class="">
-            {{dispChord}}
-          </p>
+      <div class="mt-8">
+        <p>コードチェック</p>
+        <div class="mt-4 mx-auto flex justify-around w-full md:w-4/5 lg:w-3/4 xl:w-2/3 2xl:1/2">
+          <div>
+            <!-- ルート音 -->
+            <span>ルート音：</span>
+            <select v-model="selectRootSound" name="" id="" class="text-black h-8">
+              <option value=""></option>
+              <option v-for="(item,n) in arrayMusicalScale" v-bind:key="n" v-bind:value="item">{{item}}</option>
+            </select>
+          </div>
+          
+          <div>
+            <!-- メジャー・マイナー -->
+            <span>ムード：</span>
+            <select v-model="selectMood" name="" id="" class="text-black h-8">
+              <option value=""></option>
+              <option value="ma">major</option>
+              <option value="mi">minor</option>
+              <option value="di">dim</option>
+            </select>
+          </div>
+          
+          <div>
+            <!-- テンション -->
+            <span>テンション：</span>
+            <select v-model="selectTension" name="" id="sel_Tension" class="text-black h-8">
+              <option value=""></option>
+              <option value="7">7th</option>
+              <option value="M7">M7th</option>
+              <option value="9">9th</option>
+              <option value="11">11th</option>
+              <option value="13">13th</option>
+            </select>
+          </div>
+          
+          <div>
+            <button class="px-4 h-8 transition-colors bg-green-300 border active:bg-green-600 font-medium border-green-600 text-white rounded-lg hover:bg-green-600 disabled:opacity-50"
+                @click="chordSearch">検索実行
+            </button>
+          </div>
         </div>
-        <div v-if="searchChordMsg">
-          <!-- コード検索時メッセージ -->
-          <p class="text-red-600">
-            {{searchChordMsg}}
-          </p>
+  
+        <div class="mt-4">
+          <!-- 検索結果表示エリア -->
+          <div v-if="dispChord">
+            <!-- コードの構成音表示 -->
+            <p class="">
+              {{dispChord}}
+            </p>
+          </div>
+          <div v-if="searchChordMsg">
+            <!-- コード検索時メッセージ -->
+            <p class="text-red-600">
+              {{searchChordMsg}}
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -82,7 +78,6 @@
 
 <style>
 #keyboard {
-  /* width: 100%; */
   position: relative;
 }
 
@@ -124,13 +119,9 @@
   border-bottom-right-radius: 0.5rem; /* 8px */
 }
 .blackkey:hover{
-  /* background-color: rgb(12 11 9); */
-  /* background-color: rgb(24 22 18); */
   background-color: rgb(36 33 27);
 }
 .blackkey:active{
-  /* background-color: rgb(26 24 22); */
-  /* background-color: rgb(52 48 44); */
   background-color: rgb(78 72 66);
 }
 </style>
@@ -185,7 +176,7 @@ import * as Tone from 'tone'
     methods:{
       dispKeyboard(){
         let dispWidth = window.innerWidth
-        if(dispWidth<649){
+        if(dispWidth<680){
           this.message=`画面の横幅が規定値以下のためこの画面は表示できません。
                         スマートフォンをご利用の場合は横向きに設定の上ご使用ください。
                         (横向きにした場合でも横幅が規定値以下の場合はご利用できませんのでPCもしくはタブレットでのご使用を推奨しております。)`
@@ -214,9 +205,7 @@ import * as Tone from 'tone'
           }else{
             arryIndex++
           }
-          //arryIndex = arryIndex > 10 ? arryIndex = 0 : arryIndex + 1
         }
-        //console.log(this.arrayKeyboardAllMusicalScale)
       },
       playSound(key,release,duration_s){
         //*****************************
@@ -245,10 +234,6 @@ import * as Tone from 'tone'
         //*****************************
         const sampler = new Tone.Sampler({
           urls: {
-            // "C4": "C4.mp3",
-            // "D#4": "Ds4.mp3",
-            // "F#4": "Fs4.mp3",
-            // "A4": "A4.mp3",
             "C3":"C3.mp3",
             "D#3":"Ds3.mp3",
             "F#3":"Fs3.mp3",
@@ -266,17 +251,16 @@ import * as Tone from 'tone'
           release: release,
           baseUrl: "https://tonejs.github.io/audio/salamander/",
         }).toDestination();
-        
+        // エフェクト（リバーブ）
+        const reverb = new Tone.Freeverb(0.7,200).toMaster();
+        sampler.connect(reverb);
+
         Tone.loaded().then(() => {
           sampler.triggerAttackRelease(key, duration_s);
         })
       },
       chordSearch(){
         const chordSounds = []
-        // const rootSound = "C" + "3"
-        // const rootUpperSound = "C" + "4"
-        // const thirdSound = "E" + "4"
-        // const fifthSound = "G" + "4"
         let rootBaseSound = ""
         let rootSoundAryIndex = -1
         let rootSound = ""
@@ -357,9 +341,7 @@ import * as Tone from 'tone'
           tensionSoundAryIndex = rootSoundAryIndex + 9
         }
 
-
         if(tensionSoundAryIndex != -1){
-          //tensionSound = tensionSoundAryIndex < 12 ? this.arrayMusicalScale[tensionSoundAryIndex] + "5" :this.arrayMusicalScale[tensionSoundAryIndex-12] + "5"
           let checkTensionSoundIndex = tensionSoundAryIndex < 12 ? tensionSoundAryIndex :tensionSoundAryIndex-12
           if(checkTensionSoundIndex < 6){
             //ド~ファの間の音なら高い音(5)を使用
@@ -371,7 +353,6 @@ import * as Tone from 'tone'
           chordSounds.push(tensionSound)
           this.dispChord += " " + tensionSound.slice(0,-1)
         }
-
         this.playSound(chordSounds,1,'2')
       }
     }

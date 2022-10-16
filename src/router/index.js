@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
-import Certification from '@/views/Certification.vue'
-import Login from '@/views/Login.vue'
+import Certification from '@/views/certification/Certification.vue'
+import Login from '@/views/certification/Login.vue'
+import CertificationRecruiter from '@/views/certification/CertificationRecruiter.vue'
 import MusicSearch from '@/views/search/MusicSearch.vue'
 import SearchNowPlaying from '@/views/search/SearchNowPlaying.vue'
 import SearchKeyword from '@/views/search/SearchKeyword.vue'
@@ -31,6 +32,11 @@ const routes = [
     path: '/Login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/CertificationRecruiter',
+    name: 'CertificationRecruiter',
+    component: CertificationRecruiter
   },
   {
     path: '/MusicSearch',

@@ -1,29 +1,11 @@
 <template>
   <div class="search">
-    <!-- <input
-        placeholder="enter artist name"
-        v-model="search_artist_name"
-        class="py-1 text-black rounded"
-        required>
-    <button
-      type="button"
-      @click="seach_artist"
-      class="py-1 px-4 ml-4 transition-colors bg-green-300 border active:bg-green-600 font-medium border-green-600 text-white rounded-lg hover:bg-green-600 disabled:opacity-50">
-      search
-    </button> -->
-
     <h1 class="text-2xl py-2">SearchKeywordMusic</h1>
     <input
         placeholder="enter track name"
         v-model="search_keyword"
         class="py-1 text-black rounded"
         required>
-    <!-- <button
-      type="button"
-      @click="seachTrack"
-      class="py-1 px-4 ml-4 transition-colors bg-green-300 border active:bg-green-600 font-medium border-green-600 text-white rounded-lg hover:bg-green-600 disabled:opacity-50">
-      search
-    </button> -->
     <br>
     
     <div class="py-1.5 text-red-600">
@@ -34,154 +16,111 @@
     </div>
 
     <div v-if="!err_message && response_data != null" v-cloak>
-      <div v-for="(item,n) in response_data.tracks.items" v-bind:key="n" class="mt-12 order-dashed border-gray-600 border-4">
-        <div class="container mx-auto">
-          <div class="grid grid-cols-7">
-            <div class="col-span-1"></div>
-            <!-- アーティスト名 -->
-            <p class="col-span-5 text-center">アーティスト : {{ item.artists[0].name }}</p>
-            <div class="col-span-1"></div>
-          </div>
-          <div class="grid grid-cols-7">
-            <div class="col-span-1"></div>
-            <!-- 曲名 -->
-            <p class="col-span-5 text-center">曲名 : {{ item.name }}</p>
-            <div class="col-span-1"></div>
-          </div>
-          <div class="grid grid-cols-7">
-            <div class="col-span-1"></div>
-            <div class="col-span-5 mt-4">
-              <!-- 画像 -->
-              <div class="m-auto w-60 h-60 rounded-full ring-4 ring-indigo-600 py-2 bg-white">
-                <a href="#" @click="openSpotify(item.external_urls.spotify)" class="cursor-pointer">
-                  <img :src="item.album.images[1].url" class="rounded-full m-auto w-56 h-56"/>
-                </a>
-              </div>
-            </div>
-            <div class="col-span-1"></div>
-          </div>
-          <div v-if="array_response_audio_features_data.length != 0">
-            <!-- 曲の詳細情報 -->
-            <div class="grid grid-cols-7 mt-4">
-              <div class="col-span-1"></div>
-              <!-- key -->
-              <p class="col-span-5 text-center">Key : 
-                <span v-if="array_scale[n]">
-                  {{ array_scale[n] }}
-                </span>
-                <span v-else>不明</span>
-              </p>
-              <div class="col-span-1"></div>
-            </div>
-            <div class="grid grid-cols-7">
-              <div class="col-span-1"></div>
-              <!-- BPM -->
-              <p class="col-span-5 text-center">BPM : 
-                <span v-if="array_tempo[n]">
-                  {{ array_tempo[n] }}
-                </span>
-                <span v-else>不明</span>
-              </p>
-              <div class="col-span-1"></div>
-            </div>
-            <div class="grid grid-cols-7">
-              <div class="col-span-1"></div>
-              <!-- 曲の長さ -->
-              <p class="col-span-5 text-center">時間 : 
-                <span v-if="array_duration_m[n] && array_duration_s[n]">
-                  {{ array_duration_m[n] }}分{{array_duration_s[n]}}秒
-                </span>
-                <!-- <span v-if="true">テストテスト</span> -->
-                <span v-else>不明</span>
-              </p>
-              <div class="col-span-1"></div>
-            </div>
-            <div class="grid grid-cols-7">
-              <div class="col-span-1"></div>
-              <!-- 拍子 -->
-              <p class="col-span-5 text-center">拍子 : 
-                <span v-if="array_time_signature[n]">
-                  {{ array_time_signature[n] }}
-                </span>
-                <span v-else>不明</span>
-              </p>
-              <div class="col-span-1"></div>
-            </div>
+      <!-- ここから -->
+      <section class="body-font">
+        <div class="container px-5 py-8 mx-auto">
+          <div class="flex flex-wrap -m-4">
+            <div v-for="(item,n) in response_data.tracks.items" v-bind:key="n" class="mt-12 p-4 w-full md:w-1/2 max-w-sm mx-auto lg:w-1/3">
+              <div class="h-full border-2 border-gray-200 border-opacity-60 rounded-lg overflow-hidden">
+                <!-- アーティスト名 -->
+                <p class="text-center">アーティスト : {{ item.artists[0].name }}</p>
+                <!-- 曲名 -->
+                <p class="text-center">曲名 : {{ item.name }}</p>
+                <!-- 画像 -->
+                <div class="m-auto w-60 h-60 rounded-full ring-4 ring-indigo-600 py-2 bg-white">
+                  <a href="#" @click="openSpotify(item.external_urls.spotify)" class="cursor-pointer">
+                    <img :src="item.album.images[1].url" class="rounded-full m-auto w-56 h-56"/>
+                  </a>
+                </div>
 
-            <div class="grid grid-cols-7">
-              <div class="col-span-2 py-2.5"><hr/></div>
-              <div class="col-span-3 text-center">
-                <button @click="f_show_shosai(n)" class="text-blue-600 text-sm">
-                <span v-if="!show_shosai[n]">
-                  さらに詳しく
-                </span>
-                <span v-else>
-                  詳細を隠す
-                </span>
-                </button>
-              </div>
-              <div class="col-span-2 py-2.5"><hr/></div>
-            </div>
-            <div v-show="show_shosai[n]">
-              <div class="grid grid-cols-7">
-                <div class="col-span-1"></div>
-                <!-- アコースティック感 -->
-                <p class="col-span-5 text-center">アコースティック感 : 
-                  <span v-if="array_acousticness[n]">
-                    {{ array_acousticness[n] }}%
-                  </span>
-                  <span v-else>不明</span>
-                </p>
-                <div class="col-span-1"></div>
-              </div>
-              <div class="grid grid-cols-7">
-                <div class="col-span-1"></div>
-                <!-- ダンサブル -->
-                <p class="col-span-5 text-center">ダンサブル(踊りやすさ) : 
-                  <span v-if="array_danceability[n]">
-                    {{ array_danceability[n] }}%
-                  </span>
-                  <span v-else>不明</span>
-                </p>
-                <div class="col-span-1"></div>
-              </div>
-              <div class="grid grid-cols-7">
-                <div class="col-span-1"></div>
-                <!-- エナジー -->
-                <p class="col-span-5 text-center">エナジー(過激さ) : 
-                  <span v-if="array_energy[n]">
-                    {{ array_energy[n] }}%
-                  </span>
-                  <span v-else>不明</span>
-                </p>
-                <div class="col-span-1"></div>
-              </div>
-              <div class="grid grid-cols-7">
-                <div class="col-span-1"></div>
-                <!-- ライブ感 -->
-                <p class="col-span-5 text-center">ライブ感 : 
-                  <span v-if="array_liveness[n]">
-                    {{ array_liveness[n] }}%
-                  </span>
-                  <span v-else>不明</span>
-                </p>
-                <div class="col-span-1"></div>
-              </div>
-              <div class="grid grid-cols-7">
-                <div class="col-span-1"></div>
-                <!-- ポジティブ -->
-                <p class="col-span-5 text-center">ポジティブ感 : 
-                  <span v-if="array_valence[n]">
-                    {{ array_valence[n] }}%
-                  </span>
-                  <span v-else>不明</span>
-                </p>
-                <div class="col-span-1"></div>
+                <div v-if="array_response_audio_features_data.length != 0">
+                  <!-- 曲の詳細情報 -->
+                  <!-- key -->
+                  <p class="text-center">Key : 
+                    <span v-if="array_scale[n]">
+                      {{ array_scale[n] }}
+                    </span>
+                    <span v-else>不明</span>
+                  </p>
+                  <!-- BPM -->
+                  <p class="text-center">BPM : 
+                    <span v-if="array_tempo[n]">
+                      {{ array_tempo[n] }}
+                    </span>
+                    <span v-else>不明</span>
+                  </p>
+                  <!-- 曲の長さ -->
+                  <p class="text-center">時間 : 
+                    <span v-if="array_duration_m[n] && array_duration_s[n]">
+                      {{ array_duration_m[n] }}分{{array_duration_s[n]}}秒
+                    </span>
+                    <span v-else>不明</span>
+                  </p>
+                  <!-- 拍子 -->
+                  <p class="text-center">拍子 : 
+                    <span v-if="array_time_signature[n]">
+                      {{ array_time_signature[n] }}
+                    </span>
+                    <span v-else>不明</span>
+                  </p>
+                  <div class="grid grid-cols-7">
+                    <div class="col-span-2 py-2.5"><hr/></div>
+                    <div class="col-span-3 text-center">
+                      <button @click="f_show_shosai(n)" class="text-blue-600 text-sm">
+                      <span v-if="!show_shosai[n]">
+                        さらに詳しく
+                      </span>
+                      <span v-else>
+                        詳細を隠す
+                      </span>
+                      </button>
+                    </div>
+                    <div class="col-span-2 py-2.5"><hr/></div>
+                  </div>
+                  <div v-show="show_shosai[n]">
+                    <!-- アコースティック感 -->
+                    <p class="text-center">アコースティック感 : 
+                      <span v-if="array_acousticness[n]">
+                        {{ array_acousticness[n] }}%
+                      </span>
+                      <span v-else>不明</span>
+                    </p>
+                    <!-- ダンサブル -->
+                    <p class="text-center">ダンサブル(踊りやすさ) : 
+                      <span v-if="array_danceability[n]">
+                        {{ array_danceability[n] }}%
+                      </span>
+                      <span v-else>不明</span>
+                    </p>
+                    <!-- エナジー -->
+                    <p class="text-center">エナジー(過激さ) : 
+                      <span v-if="array_energy[n]">
+                        {{ array_energy[n] }}%
+                      </span>
+                      <span v-else>不明</span>
+                    </p>
+                    <!-- ライブ感 -->
+                    <p class="text-center">ライブ感 : 
+                      <span v-if="array_liveness[n]">
+                        {{ array_liveness[n] }}%
+                      </span>
+                      <span v-else>不明</span>
+                    </p>
+                    <!-- ポジティブ -->
+                    <p class="text-center">ポジティブ感 : 
+                      <span v-if="array_valence[n]">
+                        {{ array_valence[n] }}%
+                      </span>
+                      <span v-else>不明</span>
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
+      <!-- ここまで -->
     </div>
     <div v-else-if="!err_message && search_action_flg && this.search_keyword != '' && response_data==null">
       <!-- 検索はかけたが、結果がなかった場合 -->
@@ -205,9 +144,7 @@ import _ from 'lodash'
 
 export default {
   name:'search',
-  // response_data: [],
   props: {
-    // routeParams: Object
     AuthorizationParam:String
   },
   data(){
@@ -217,9 +154,6 @@ export default {
       response_data:null,
       array_response_audio_features_data:[],
       show_shosai:[false,false,false,false,false],
-      // searched_track_name: '',
-      // followers: '',
-      // popularity: '',
       // 詳細データ
       array_scale:[],
       array_tempo:[],
@@ -247,23 +181,15 @@ export default {
     },
     response_data: function(newData){
       this.search_action_flg = true
-      // console.log(newData.tracks.items[0].id)
-      // this.seachTrackAudioFeature(newData.tracks.items[0].album.id)
       if(newData != null){
         this.seachTrackAudioFeature(newData.tracks.items)
       }
     }
   },
   created: function() {
-    // console.log('↓↓response_data↓↓')
-    // console.log(this.response_data)
-    // console.log('↑↑response_data↑↑')
     this.err_message = ''
   },
   mounted:function(){
-    // this.keyword = 'JavaScript'
-    // this.getAnswer()
-
     // lodashの使用(最後の入力から3000msec待って、getAnswerを走らせる)
     this.debouncedSeachTrack = _.debounce(this.seachTrack,3000)
 
@@ -274,7 +200,6 @@ export default {
   },
   methods:{
     seachTrack: function(){
-      // console.log(this.$route.query.token_type + ' ' + this.$route.query.access_token)
       if(!this.search_keyword){
         // 検索文字が空文字だったら処理中断
         console.log('seachTrack:空文字')
@@ -287,14 +212,12 @@ export default {
 
       axios.get("https://api.spotify.com/v1/search",{
         headers:{
-          // "Authorization": this.$route.query.token_type + ' ' + this.$route.query.access_token
           "Authorization": this.AuthorizationParam
         },
-        params:{"q": this.search_keyword , "limit": "5", "offset": "0", "type": "track", "market": "JP"}
+        params:{"q": this.search_keyword , "limit": "6", "offset": "0", "type": "track", "market": "JP"}
       }).then(response=>{
         this.response_data = response.data;
         console.log(this.response_data);
-        // this.retrieve_data();
         this.type_wait_message = ''
       }).catch(error =>{
         this.type_wait_message = ''
@@ -302,18 +225,11 @@ export default {
         console.log(error)
       })
     },
-    // retrieve_data: function(){
-    //   // this.searched_track_name = this.track_data.tracks.items[0].name;
-    //   // this.followers = this.track_data.tracks.items[0].followers.total;
-    //   // this.popularity = this.track_data.tracks.items[0].popularity;
-    // }
     openSpotify: function(url){
       window.open(url,'spotifyNowPlaying')
     },
     seachTrackAudioFeature: function(items){
-      // console.log(this.$route.query.token_type + ' ' + this.$route.query.access_token)
       if(this.response_data === null){
-        // console.log('seachTrackAudioFeature:空文字')
         this.array_response_audio_features_data = []
         this.array_tempo = []
         this.array_duration_m = []
@@ -324,22 +240,18 @@ export default {
         this.array_energy = []
         this.array_liveness = []
         this.array_valence = []
-
         this.err_message = ''
         return
       }
       let id = ''
       items.forEach((item,n) =>{
-      // for((item,n) in items){
         id = item.id
         axios.get("https://api.spotify.com/v1/audio-features/"+id ,{
           headers:{
             "Accept": "application/json",
             "Content-Type": "application/json",
-            // "Authorization": this.$route.query.token_type + ' ' + this.$route.query.access_token,
             "Authorization": this.AuthorizationParam
           },
-          // params:{"id": "37rDp8YkDeGVLqRS8INRiY"}
         }).then(response=>{
           // ******************
           //各詳細データのセット
