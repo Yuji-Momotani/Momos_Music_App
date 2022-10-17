@@ -23,12 +23,21 @@ DJ Mixの支援をする。
 ### API
 - 楽曲検索系：Spotify API
 ### バックエンド
+- 現状のバージョンではなし。
 
 ### インフラ
+- AWS
+  - S3：クラウドストレージ
+  - CloudFront：CDNサービス
+  - Route53：DNSサービス
+  - ACM：SSL証明書発行サービス
 
 ## バージョン情報
 
 - 1.00
-  - SearchPlayingMusic画面：Spotifyで再生中の楽曲情報を取得できる
-  - SearchKeywordMusic画面：キーワード入力で楽曲情報を取得できる
-  - SearchDJNextTune画面：DJのMixリストを作成できる。選曲した楽曲情報をもとに次の曲を自動で提案してくれる機能
+  - 楽曲情報検索App
+    - SearchPlayingMusic画面：Spotifyで再生中の楽曲情報を取得できる
+    - SearchKeywordMusic画面：キーワード入力で楽曲情報を取得できる
+    - SearchDJNextTune画面：DJのMixリストを作成できる。選曲した楽曲情報をもとに次の曲を自動で提案してくれる機能
+  - コード検索App
+    - コード検索画面

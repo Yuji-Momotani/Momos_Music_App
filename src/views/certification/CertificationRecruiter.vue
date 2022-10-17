@@ -19,8 +19,14 @@
       </button>
     </div>
     <div v-if="isLoginDataShow" class="mt-4">
-      email:[kilroy_here1016@yahoo.co.jp] <br/>
-      password:[MomosMusic336454]<br/>
+      E-Mail：
+        <span class="text-xl font-bold">
+          kilroy_here1016@yahoo.co.jp
+        </span><br/>
+      Password：
+        <span class="text-xl font-bold">
+          MomosMusic336454
+        </span><br/>
       <button 
         class="py-1.5 px-4 transition-colors bg-green-300 border active:bg-green-600 font-medium border-green-600 text-white rounded-lg hover:bg-green-600 disabled:opacity-50 mt-4"
         @click="spotifyLogin">
