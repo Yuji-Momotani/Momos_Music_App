@@ -5,7 +5,6 @@
 
     <div v-if="AuthorizeTokun != ''" class="mt-16">
       <div>
-        <!-- <router-link to="/MusicSearch/SearchNowPlaying" class="no-underline hover:underline text-blue-300">・再生中の曲を検索</router-link><br/> -->
         <router-link :to="{ name: 'SearchNowPlaying', params: {AuthorizationParam: AuthorizeTokun } }" class="no-underline hover:underline text-blue-300">1.SearchPlaying</router-link><br/>
       </div>
       <div class="mt-8">
@@ -17,9 +16,13 @@
     </div>
     <div v-else class="mt-16">
       <div>
-        <router-link to="/Certification">
+        <!-- <router-link to="/Certification">
           <p class="bg-green-500 hover:bg-green-400 text-white rounded py-1.5 px-2 w-32 m-auto">ログイン</p>
-        </router-link>
+        </router-link> -->
+        <!-- ↓↓仮 -->
+        <button @click="sampleLogin" class="bg-green-500 hover:bg-green-400 text-white rounded py-1.5 px-2 w-32 m-auto">
+          ログイン
+        </button>
       </div>
       <div class="mt-8">
         <router-link to="/CertificationRecruiter" class="m mt-8">
@@ -47,7 +50,6 @@ import Symbolicon from '@/components/Symbolicon.vue';
 
 export default {
   name:'MusicSearch',
-  // props: ['AuthorizeTokun'],
   props: {
     routeParams: Object,
     AuthorizationParam: String
@@ -58,22 +60,19 @@ export default {
     }
   },
   mounted: function() {
-    // console.log('this.routeParams.access_token')
-    // console.log(this.routeParams.access_token)
-    // console.log('this.routeParams.token_type')
-    // console.log(this.routeParams.token_type)
-    // console.log(this.$route)
     if(this.routeParams.token_type && this.routeParams.access_token){
       this.AuthorizeTokun = this.routeParams.token_type + ' ' + this.routeParams.access_token
-      // alert(authorize_access_tokun)
-      // this.$router.push({name:'MusicSearch',params:{AuthorizeTokun: authorize_access_tokun}})
       this.$emit('Login',true,this.AuthorizeTokun)
     }else if(this.AuthorizationParam){
       this.AuthorizeTokun = this.AuthorizationParam
     }
   },
   methods:{
-    
+    sampleLogin:function(){
+      // これは仮のログインボタン処理です。
+      alert(`現在、ポートフォリオとしてのみ公開しております。のちに一般公開予定です。
+人事採用の方は「人事採用の方はこちらへ」のリンクより遷移してください。`)
+    }
   },
   components: {
     Symbolicon
