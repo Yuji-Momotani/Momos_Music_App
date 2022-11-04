@@ -22,6 +22,10 @@
   background-color:#2c3e50;
   height: 100%;
 }
+
+.bg-main-background-color{
+  background-color:#2c3e50;
+}
 .pre-line{
   white-space: pre-line;
 }
