@@ -176,7 +176,7 @@ export default {
       array_IT_musical_scale:['ド','ド#(レ♭)','レ','レ#(ミ♭)','ミ','ファ','ファ#(ソ♭)','ソ','ソ#(ラ♭)','ラ','ラ#(シ♭)','シ'],
       array_US_musical_scale:['C','C#(D♭)','D','D#(E♭)','E','F','F#(G♭)','G','G#(A♭)','A','A#(B♭)','B'],
       //mode:0「マイナー」、1「メジャー」
-      array_musical_scale_type:['マイナー','メジャー']
+      array_musical_scale_type:['マイナー','メジャー'],
     }
   },
   props: {
@@ -191,11 +191,8 @@ export default {
   watch:{
     response_data: function(newData){
       if(newData != ''){
-        console.log('↓↓newData↓↓')
-        console.log(newData)
         this.seachTrackAudioFeature(newData.item.id)
       }else{
-        console.log('No Playing')
         this.err_message = `再生中の曲がありません。 
                             Spotifyで曲が再生されているか確認してください。`
       }
@@ -224,7 +221,6 @@ export default {
     },
     seachTrackAudioFeature: function(id){
       if(this.response_data === null){
-        console.log('seachTrackAudioFeature:空文字')
         this.response_audio_features_data = null
         this.res_scale = ''
         this.res_tempo = ''
@@ -286,9 +282,6 @@ export default {
                             うまく動作しない場合は再度認証してください。`
         console.log(error)
       })
-      
-      console.log('this.response_audio_features_data')
-      console.log(this.response_audio_features_data)
     },
     openSpotify:function(url){
       window.open(url,'spotifyNowPlaying')

@@ -32,25 +32,21 @@ export default {
   name: 'Certification',
   methods: {
     spotifyLogin: function() {
-      // let endpoint = 'https://accounts.spotify.com/authorize'
-      // let response_type = 'token'
-      // //let response_type = 'code'
-      // let state = 'state'
-      // let client_id = process.env.VUE_APP_CLIENT_ID
-      // let redirect_uri = process.env.VUE_APP_REDIRECT_URL
-      // //let scope = 'user-read-currently-playing'
-      // const scopes = ['streaming', 'user-read-email', 'user-read-private', 'playlist-modify-public', 'playlist-modify-private','user-read-currently-playing']
-      // location.href = endpoint + 
-      //   '?response_type=' + response_type +
-      //   '&client_id=' + client_id +
-      //   '&redirect_uri=' + redirect_uri +
-      //   // '&scope=' + scope
-      //   '&scope=' + scopes.join(' ') +
-      //   '&state=' + state
-      
-      // 現状ここは動作しない様にしておく。
-      alert('現在、ポートフォリオとしてのみ公開しております。のちに一般公開予定です。')
-
+      let endpoint = 'https://accounts.spotify.com/authorize'
+      let response_type = 'token'
+      //let response_type = 'code'
+      let state = 'state'
+      let client_id = process.env.VUE_APP_CLIENT_ID
+      let redirect_uri = process.env.VUE_APP_REDIRECT_URL
+      //let scope = 'user-read-currently-playing'
+      const scopes = ['streaming', 'user-read-email', 'user-read-private', 'playlist-modify-public', 'playlist-modify-private','user-read-currently-playing']
+      location.href = endpoint + 
+        '?response_type=' + response_type +
+        '&client_id=' + client_id +
+        '&redirect_uri=' + redirect_uri +
+        // '&scope=' + scope
+        '&scope=' + scopes.join(' ') +
+        '&state=' + state
     }
   },
 }
