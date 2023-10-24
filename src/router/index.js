@@ -50,9 +50,6 @@ const routes = [
     path: '/MusicSearch/SearchNowPlaying',
     name: 'SearchNowPlaying',
     component: SearchNowPlaying,
-    // props: (route) => {
-    //   return { routeParams: route.query }
-    // }
     props: true
   },
   {

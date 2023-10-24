@@ -236,9 +236,6 @@
           params:{"q": this.search_keyword , "limit": "6", "offset": "0", "type": "track", "market": "JP"}
         }).then(response=>{
           this.array_response_data = response.data.tracks.items
-          //デバッグ
-          console.log('テストsearch')
-          console.log(this.array_response_data)
           this.type_wait_message = ''
         }).catch(error =>{
           this.type_wait_message = ''

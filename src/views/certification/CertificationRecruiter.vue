@@ -1,3 +1,5 @@
+<!-- このページは2023/10以降、使用しない（ポートフォリオ用） -->
+
 <template>
   <div class="CertificationRecruiter">
     <p class="text-2xl">人事採用担当者様専用<br/>ログインページ</p>

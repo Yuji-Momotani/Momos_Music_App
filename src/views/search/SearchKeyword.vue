@@ -202,7 +202,6 @@ export default {
     seachTrack: function(){
       if(!this.search_keyword){
         // 検索文字が空文字だったら処理中断
-        console.log('seachTrack:空文字')
         this.type_wait_message = '検索してください。'
         this.response_data = null
         return
@@ -217,7 +216,6 @@ export default {
         params:{"q": this.search_keyword , "limit": "6", "offset": "0", "type": "track", "market": "JP"}
       }).then(response=>{
         this.response_data = response.data;
-        console.log(this.response_data);
         this.type_wait_message = ''
       }).catch(error =>{
         this.type_wait_message = ''
@@ -292,8 +290,6 @@ export default {
           console.log(error)
         })
       })
-      console.log('this.array_response_audio_features_data')
-      console.log(this.array_response_audio_features_data)
     },
     f_show_shosai(index){
       this.show_shosai[index] = !this.show_shosai[index]
